@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { useGlobalContext } from "../context/GlobalContext"
+import TaskRow from "../components/TaskRow";
 
 export default function TaskList() {
     const { tasks, fetchTasks } = useGlobalContext();
@@ -13,22 +14,22 @@ export default function TaskList() {
     return (
         <>
             <section>
-                <div>
-                    <ul>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Stato</th>
+                            <th scope="col">Data di Creazione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {
-                            tasks.map((t) => {
-                                return (
-                                    <li key={t.id}>
-                                        <h3>{t.title}</h3>
-                                        <p>{t.description}</p>
-                                        <p>{t.status}</p>
-                                        <p>{t.createdAt}</p>
-                                    </li>
-                                )
+                            tasks.map((task) => {
+                                return <TaskRow key={task.id} task={task} />
                             })
                         }
-                    </ul>
-                </div>
+                    </tbody>
+                </table>
             </section>
         </>
     )
