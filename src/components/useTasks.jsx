@@ -8,15 +8,46 @@ export default function useTasks() {
 
 
     function getTasks() {
-        fetch(`${url}/tasks`)
-            .then(res => res.json())
-            .then(data => setTasks(data))
-            .catch(error => console.error(error))
+        return fetch(`${url}/tasks`)
+            .then(res => {
+                if (!res.ok) throw new Error('Errore nel server');
+                return res.json();
+            })
+            .then(data => {
+                setTasks(data);
+                return data;
+            })
+            .catch(error => {
+                console.error(error);
+                throw error;
+            });
     }
 
     function addTask(task) {
-
+        return fetch(`${url}/tasks`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(task),
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Errore nel server');
+                return res.json();
+            })
+            .then(data => {
+                if (data.success === true) {
+                    return getTasks().then(() => data);
+                } else {
+                    throw new Error(data.message || 'Errore sconosciuto');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                throw error;
+            });
     }
+
+
+
 
     function removeTask(taskId) {
 

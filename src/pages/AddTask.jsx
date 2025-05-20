@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from 'react';
+import { useGlobalContext } from '../context/GlobalContext';
 
 
 export default function AddTask() {
@@ -8,6 +9,8 @@ export default function AddTask() {
     const [taskTitle, setTaskTitle] = useState('');
     const descriptionRef = useRef();
     const statusRef = useRef();
+
+    const { addTask } = useGlobalContext();
 
 
     const handleSubmit = (e) => {
@@ -26,7 +29,21 @@ export default function AddTask() {
             }
         }
 
-        console.log(`Nuova Task: ${taskTitle}, ${refDesc}, ${status}`)
+
+        const newTask = {
+            title: taskTitle,
+            description: refDesc,
+            status: status
+        }
+
+        addTask(newTask)
+            .then(() => {
+                alert('Task aggiunta con successo');
+                setTaskTitle('');
+                descriptionRef.current.value = '';
+                statusRef.current.value = '';
+            })
+            .catch(error => alert(`Errore: ${error.message}`))
 
     }
 
