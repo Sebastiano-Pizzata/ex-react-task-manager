@@ -50,7 +50,25 @@ export default function useTasks() {
 
 
     function removeTask(taskId) {
-
+        return fetch(`${url}/tasks/${taskId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Errore nel server');
+                return res.json();
+            })
+            .then(data => {
+                if (data.success === true) {
+                    return getTasks().then(() => data);
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Errore nella rimozione della task:', error);
+                throw error;
+            });
     }
 
 

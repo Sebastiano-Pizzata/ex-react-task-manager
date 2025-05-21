@@ -1,14 +1,16 @@
 import { useGlobalContext } from "../context/GlobalContext";
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 export default function TaskDetail() {
 
-    const { tasks } = useGlobalContext();
+    const { tasks, removeTask } = useGlobalContext();
 
     const [singleTask, setSingleTask] = useState(null)
 
     const { id } = useParams();
+
+    const navigate = useNavigate();
 
 
 
@@ -22,7 +24,12 @@ export default function TaskDetail() {
     }
 
     function handleClick() {
-        return console.log('Elimino Task')
+        removeTask(singleTask.id)
+            .then(() => {
+                alert('Eliminazione avvenuta con successo');
+                navigate('/');
+            })
+            .catch(error => alert(`Errore: ${error.message}`))
     }
 
     const rowClass =
