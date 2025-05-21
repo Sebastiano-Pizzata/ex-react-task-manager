@@ -1,6 +1,7 @@
 import { useGlobalContext } from "../context/GlobalContext";
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import Modal from "./Modal";
 
 export default function TaskDetail() {
 
@@ -12,24 +13,31 @@ export default function TaskDetail() {
 
     const navigate = useNavigate();
 
+    const [show, setShow] = useState(false);
+
 
 
     useEffect(() => {
         const taskS = tasks.find((t) => t.id.toString() === id);
-        setSingleTask(taskS || null)
+        setSingleTask(taskS)
     }, [id, tasks])
 
     if (!singleTask) {
         return <div>Caricamento task O task non trovata.</div>;
     }
 
-    function handleClick() {
+
+    function deleteTask() {
         removeTask(singleTask.id)
             .then(() => {
                 alert('Eliminazione avvenuta con successo');
                 navigate('/');
             })
             .catch(error => alert(`Errore: ${error.message}`))
+    }
+
+    function handleClick() {
+        setShow(true)
     }
 
     const rowClass =
@@ -46,11 +54,22 @@ export default function TaskDetail() {
                     <p className={`card-text ${rowClass}`}>{singleTask.status}</p>
                     <p className="card-text ">{singleTask.createdAt}</p>
                     <div>
-                        <button onClick={handleClick} className="btn btn-danger">Elimina Task</button>
+                        <button onClick={handleClick}
+                            className="btn btn-danger"
+                            disabled={show}>Elimina Task</button>
                     </div>
                 </div>
 
             </div>
+            {show && (
+                <Modal
+                    title="Eliminazione Task"
+                    content={singleTask}
+                    show={show}
+                    onClose={() => setShow(false)}
+                    onConfirm={deleteTask}
+                />
+            )}
         </section>
     )
 }
