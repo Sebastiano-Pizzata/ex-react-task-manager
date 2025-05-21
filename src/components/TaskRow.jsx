@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { memo } from 'react'
 
 const TaskRow = memo(({ task }) => {
@@ -7,7 +8,7 @@ const TaskRow = memo(({ task }) => {
                 "table-success";
     return (
         <tr className={rowClass}>
-            <td>{task.title}</td>
+            <td><Link to={`task/${task.id}`}>{task.title}</Link></td>
             <td>{task.status}</td>
             <td>{task.createdAt}</td>
         </tr>

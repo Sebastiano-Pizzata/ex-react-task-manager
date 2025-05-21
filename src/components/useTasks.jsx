@@ -37,7 +37,7 @@ export default function useTasks() {
                 if (data.success === true) {
                     return getTasks().then(() => data);
                 } else {
-                    throw new Error(data.message || 'Errore sconosciuto');
+                    throw new Error(data.message);
                 }
             })
             .catch(error => {
