@@ -41,7 +41,7 @@ export default function useTasks() {
                 }
             })
             .catch(error => {
-                console.error(error);
+                console.error("Errore nell' aggiunta della task :", error);
                 throw error;
             });
     }
@@ -72,8 +72,27 @@ export default function useTasks() {
     }
 
 
-    function updateTask(taskId) {
-
+    function updateTask(taskId, updatedData) {
+        return fetch(`${url}/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData),
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Errore nel server');
+                return res.json();
+            })
+            .then(data => {
+                if (data.success === true) {
+                    return getTasks().then(() => data);
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Errore nella modifica della task:', error);
+                throw error;
+            });
     }
 
 

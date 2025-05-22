@@ -12,7 +12,8 @@ const GlobalProvider = ({ children }) => {
         tasks: taskHook.tasks,
         fetchTasks: taskHook.getTasks,
         addTask: taskHook.addTask,
-        removeTask: taskHook.removeTask
+        removeTask: taskHook.removeTask,
+        updateTask: taskHook.updateTask
     }
 
     return (

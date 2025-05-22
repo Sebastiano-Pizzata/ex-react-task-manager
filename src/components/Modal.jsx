@@ -5,12 +5,13 @@ export default function Modal({
     content,
     show = false,
     onConfirm = () => { },
-    onClose = () => { }
+    onClose = () => { },
+    confirmText = "Conferma"
 }) {
 
     if (!show) return null;
 
-    const { title: taskTitle, description, status, createdAt } = content || {};
+
 
     return ReactDOM.createPortal(
         <div className="modal fade show" tabIndex="-1" style={{ display: 'block' }} aria-hidden="false">
@@ -21,10 +22,7 @@ export default function Modal({
                         <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
-                        <p><strong>Title:</strong> {taskTitle}</p>
-                        <p><strong>Description:</strong> {description}</p>
-                        <p><strong>Status:</strong> {status}</p>
-                        <p><strong>Created At:</strong> {createdAt}</p>
+                        {content}
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-primary" onClick={onConfirm}>Conferma</button>
