@@ -1,9 +1,22 @@
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import { useGlobalContext } from "../context/GlobalContext"
 import TaskRow from "../components/TaskRow";
 
 export default function TaskList() {
     const { tasks, fetchTasks } = useGlobalContext();
+
+
+    function debounce(callback, delay) {
+        let timer;
+        return (value) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                callback(value)
+            }, delay)
+        }
+    }
+
+
 
     useEffect(() => {
         fetchTasks()
@@ -11,8 +24,14 @@ export default function TaskList() {
 
     console.log(tasks)
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     const [sortBy, setSortBy] = useState('createdAt');
-    const [sortOrder, setSortOrder] = useState(1)
+    const [sortOrder, setSortOrder] = useState(1);
+
+    const debounceSearch = useCallback(
+        debounce(setSearchQuery, 500),
+        []);
 
     const sortIcon = sortOrder === 1 ? '↓' : '⭡'
 
@@ -26,31 +45,38 @@ export default function TaskList() {
     }
 
 
-    const sortedTask = useMemo(() => {
-        return [...tasks].sort((a, b) => {
-            let comparison;
-            if (sortBy === "title") {
-                comparison = a.title.toLowerCase().localeCompare(b.title.toLowerCase());
-            } else if (sortBy === "status") {
-                const statusOpt = ["To do", "Doing", "Done"];
-                const indexA = statusOpt.indexOf(a.status);
-                const indexB = statusOpt.indexOf(b.status);
-                comparison = indexA - indexB;
-            } else if (sortBy === "createdAt") {
-                const dateA = new Date(a.createdAt).getTime();
-                const dateB = new Date(b.createdAt).getTime();
-                comparison = dateA - dateB;
-            }
+    const sortedAndFilteredTask = useMemo(() => {
+        return [...tasks]
+            .filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()))
+            .sort((a, b) => {
+                let comparison;
+                if (sortBy === "title") {
+                    comparison = a.title.toLowerCase().localeCompare(b.title.toLowerCase());
+                } else if (sortBy === "status") {
+                    const statusOpt = ["To do", "Doing", "Done"];
+                    const indexA = statusOpt.indexOf(a.status);
+                    const indexB = statusOpt.indexOf(b.status);
+                    comparison = indexA - indexB;
+                } else if (sortBy === "createdAt") {
+                    const dateA = new Date(a.createdAt).getTime();
+                    const dateB = new Date(b.createdAt).getTime();
+                    comparison = dateA - dateB;
+                }
 
 
-            return comparison * sortOrder
-        })
-    }, [tasks, sortBy, sortOrder])
+                return comparison * sortOrder
+            })
+    }, [tasks, sortBy, sortOrder, searchQuery])
 
 
     return (
         <>
             <section className="container">
+                <h1>Lista delle Task</h1>
+
+                <input type="text"
+                    placeholder="Cerca una Task..."
+                    onChange={e => debounceSearch(e.target.value)} />
                 <table className="table">
                     <thead>
                         <tr>
@@ -64,7 +90,7 @@ export default function TaskList() {
                     </thead>
                     <tbody>
                         {
-                            sortedTask.map((task) => {
+                            sortedAndFilteredTask.map((task) => {
                                 return <TaskRow key={task.id} task={task} />
                             })
                         }
