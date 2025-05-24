@@ -96,9 +96,7 @@ export default function useTasks() {
     }
 
 
-    useEffect(() => {
-        getTasks()
-    }, [])
+
 
 
     return {
