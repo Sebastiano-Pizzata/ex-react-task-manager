@@ -71,31 +71,38 @@ export default function TaskList() {
 
     return (
         <>
-            <section className="container">
-                <h1>Lista delle Task</h1>
-
-                <input type="text"
-                    placeholder="Cerca una Task..."
-                    onChange={e => debounceSearch(e.target.value)} />
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th onClick={() => handleSort('title')}
-                                scope="col">Nome {sortBy === "title" && sortIcon}</th>
-                            <th onClick={() => handleSort('status')}
-                                scope="col">Stato{sortBy === "status" && sortIcon}</th>
-                            <th onClick={() => handleSort('createdAt')}
-                                scope="col">Data di Creazione{sortBy === "createdAt" && sortIcon}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            sortedAndFilteredTask.map((task) => {
-                                return <TaskRow key={task.id} task={task} />
-                            })
-                        }
-                    </tbody>
-                </table>
+            <section className="container mt-5">
+                <h1 className="mb-4 text-center">Lista delle Task</h1>
+                <div className="input-group mb-4">
+                    <label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Cerca una Task..."
+                            onChange={e => debounceSearch(e.target.value)} />
+                    </label>
+                </div>
+                <div className="table-responsive">
+                    <table className="table table-hover align-middle">
+                        <thead className="table-primary">
+                            <tr>
+                                <th onClick={() => handleSort('title')}
+                                    scope="col">Nome {sortBy === "title" && sortIcon}</th>
+                                <th onClick={() => handleSort('status')}
+                                    scope="col">Stato{sortBy === "status" && sortIcon}</th>
+                                <th onClick={() => handleSort('createdAt')}
+                                    scope="col">Data di Creazione{sortBy === "createdAt" && sortIcon}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                sortedAndFilteredTask.map((task) => {
+                                    return <TaskRow key={task.id} task={task} />
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </>
     )
