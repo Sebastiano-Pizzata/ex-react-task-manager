@@ -20,7 +20,7 @@ export default function TaskDetail() {
 
 
     useEffect(() => {
-        const taskS = tasks.find((t) => t.id.toString() === id);
+        const taskS = tasks.find((t) => t.id === parseInt(id));
         setSingleTask(taskS)
     }, [id, tasks])
 
@@ -29,22 +29,24 @@ export default function TaskDetail() {
     }
 
 
-    function deleteTask() {
-        removeTask(singleTask.id)
-            .then(() => {
-                alert('Eliminazione avvenuta con successo');
-                navigate('/');
-            })
-            .catch(error => alert(`Errore: ${error.message}`))
+    async function deleteTask() {
+        try {
+            await removeTask(singleTask.id);
+            alert('Eliminazione avvenuta con successo');
+            navigate('/');
+        } catch (error) {
+            alert(`Errore: ${error.message}`);
+        }
     }
 
-    function saveUpdatedTask(updateData) {
-        updateTask(singleTask.id, updateData)
-            .then(() => {
-                alert('Modifica avvenuta con successo');
-                setShowUpdate(false)
-            })
-            .catch(error => alert(`Errore: ${error.message}`))
+    async function saveUpdatedTask(updateData) {
+        try {
+            await updateTask(singleTask.id, updateData);
+            alert('Modifica avvenuta con successo');
+            setShowUpdate(false);
+        } catch (error) {
+            alert(`Errore: ${error.message}`);
+        }
     }
 
     function handleClick() {
